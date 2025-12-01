@@ -1,4 +1,5 @@
 import { Bee, Bytes, MantarayNode, Reference } from '@ethersphere/bee-js';
+import { Binary } from 'cafe-utility';
 import { Wallet } from 'ethers';
 
 const TOPIC = '00'.repeat(32);
@@ -63,6 +64,11 @@ export class Feedalizer {
       this.stampId
     );
 
+    console.log(
+      'savedMantaray reference:',
+      Binary.uint8ArrayToHex(savedMantaray.reference.toUint8Array())
+    );
+
     const writer = this.bee.makeFeedWriter(TOPIC, this.privateKey);
     await writer.uploadReference(this.stampId, savedMantaray.reference);
   }
@@ -73,10 +79,15 @@ export class Feedalizer {
     const reader = this.bee.makeFeedReader(TOPIC, this.wallet.address);
     const stuff = await reader.downloadReference();
 
-    console.log('downloaded feed stuff reference:', stuff.toString());
+    console.log(
+      'downloaded feed stuff reference:',
+      Binary.uint8ArrayToHex(stuff.reference.toUint8Array())
+    );
 
-    const data = await this.bee.downloadData(feedRef);
-    console.log('downloaded feed data:', data.toString());
+    const node = await MantarayNode.unmarshal(this.bee, feedRef);
+    await node.loadRecursively(this.bee);
+
+    console.log('node:', node);
 
     return {};
   }

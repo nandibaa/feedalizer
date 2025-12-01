@@ -11,6 +11,9 @@ importers:
       '@ethersphere/bee-js':
         specifier: ^10.1.1
         version: 10.1.1
+      cafe-utility:
+        specifier: ^33.3.2
+        version: 33.3.2
       ethers:
         specifier: ^6.15.0
         version: 6.15.0
@@ -214,6 +217,9 @@ packages:
 
   cafe-utility@32.2.0:
     resolution: {integrity: sha512-Pz1XZ9HCG0oVEfM/iAmefkaKoSJxPfJh1d7a7sFM/WqXf2Yg4bqoRioFdy+awEtFCJjC7XJzKtG0w0y57x2K0Q==}
+
+  cafe-utility@33.3.2:
+    resolution: {integrity: sha512-7hn8OrmKsJ4pASe0Y9/k+DIABZcK1jkviLyQq6VM+uJQF4jMT0E+vCVkTsMyIrYDFJ21ne1HGZVP9NwDASr7jA==}
 
   call-bind-apply-helpers@1.0.2:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
@@ -509,6 +515,8 @@ snapshots:
       - debug
 
   cafe-utility@32.2.0: {}
+
+  cafe-utility@33.3.2: {}
 
   call-bind-apply-helpers@1.0.2:
     dependencies:

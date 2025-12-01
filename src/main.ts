@@ -9,8 +9,9 @@ test();
 async function test() {
   const profile = {
     name: 'Nandor',
-    age: '19', // :)
+    age: '18', // :)
   };
+
   const feedalizer = new Feedalizer(PRIVATE_KEY, STAMP);
   await feedalizer.serialize('profile', profile);
 
