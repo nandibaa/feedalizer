@@ -16,5 +16,6 @@ async function test() {
   await feedalizer.serialize('profile', profile);
 
   const profileFromFeed = await feedalizer.deserialize('profile');
+
   console.log(profileFromFeed);
 }

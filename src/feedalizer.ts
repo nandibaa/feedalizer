@@ -76,7 +76,7 @@ export class Feedalizer {
   public async deserialize(namespace: string): Promise<Record<string, string>> {
     const feedRef = await this.getFeedReference();
 
-    const reader = this.bee.makeFeedReader(TOPIC, this.wallet.address);
+    let reader = this.bee.makeFeedReader(TOPIC, this.wallet.address);
     const stuff = await reader.downloadReference();
 
     console.log(
@@ -87,8 +87,26 @@ export class Feedalizer {
     const node = await MantarayNode.unmarshal(this.bee, feedRef);
     await node.loadRecursively(this.bee);
 
-    console.log('node:', node);
+    const rootMetadata = node.getRootMetadata().getOrThrow();
+    console.log('rootMetadata:', rootMetadata);
 
-    return {};
+    const docsMetadata = node.getDocsMetadata();
+    console.log('docsMetadata:', docsMetadata);
+
+    const feedOwner = rootMetadata['swarm-feed-owner'];
+    const feedTopic = rootMetadata['swarm-feed-topic'];
+
+    reader = this.bee.makeFeedReader(feedTopic, feedOwner);
+
+    const res = await reader.downloadPayload();
+    console.log('res', res.payload.toString());
+
+    const resWithAxios = await fetch(
+      `http://localhost:1633/bzz/${feedRef.toString()}/`
+    );
+
+    const data = await resWithAxios.json();
+
+    return data;
   }
 }
