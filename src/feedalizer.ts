@@ -6,6 +6,14 @@ const TOPIC = '00'.repeat(32);
 const BEE_URL = 'http://localhost:1633';
 const NULL_ENTRY = '00'.repeat(32);
 
+export function createKeyValue(
+  key: string,
+  value: string | number | boolean,
+  padLength?: number
+): string {
+  return `${key + ': ' + (padLength ? padLength + 1 : 0)} ${String(value)}`;
+}
+
 export class Feedalizer {
   private readonly wallet: Wallet;
   private readonly bee: Bee;
@@ -64,49 +72,31 @@ export class Feedalizer {
       this.stampId
     );
 
-    console.log(
-      'savedMantaray reference:',
-      Binary.uint8ArrayToHex(savedMantaray.reference.toUint8Array())
-    );
+    console.log('savedMantaray reference:', savedMantaray.reference.toString());
 
     const writer = this.bee.makeFeedWriter(TOPIC, this.privateKey);
     await writer.uploadReference(this.stampId, savedMantaray.reference);
   }
 
   public async deserialize(namespace: string): Promise<Record<string, string>> {
-    const feedRef = await this.getFeedReference();
+    const reader = this.bee.makeFeedReader(TOPIC, this.wallet.address);
+    const feedLatest = await reader.downloadReference();
 
-    let reader = this.bee.makeFeedReader(TOPIC, this.wallet.address);
-    const stuff = await reader.downloadReference();
+    console.log('latest feed reference:', feedLatest.reference.toString());
 
-    console.log(
-      'downloaded feed stuff reference:',
-      Binary.uint8ArrayToHex(stuff.reference.toUint8Array())
-    );
-
-    const node = await MantarayNode.unmarshal(this.bee, feedRef);
+    const node = await MantarayNode.unmarshal(this.bee, feedLatest.reference);
     await node.loadRecursively(this.bee);
 
-    const rootMetadata = node.getRootMetadata().getOrThrow();
-    console.log('rootMetadata:', rootMetadata);
+    const filename = `${namespace}.json`;
+    const fork = node.find(filename);
 
-    const docsMetadata = node.getDocsMetadata();
-    console.log('docsMetadata:', docsMetadata);
+    const namespaceAddress = fork?.targetAddress;
+    if (namespaceAddress) {
+      const data = await this.bee.downloadData(namespaceAddress);
 
-    const feedOwner = rootMetadata['swarm-feed-owner'];
-    const feedTopic = rootMetadata['swarm-feed-topic'];
+      return data.toJSON() as Record<string, string>;
+    }
 
-    reader = this.bee.makeFeedReader(feedTopic, feedOwner);
-
-    const res = await reader.downloadPayload();
-    console.log('res', res.payload.toString());
-
-    const resWithAxios = await fetch(
-      `http://localhost:1633/bzz/${feedRef.toString()}/`
-    );
-
-    const data = await resWithAxios.json();
-
-    return data;
+    return {};
   }
 }
