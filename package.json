@@ -5,9 +5,10 @@
   "scripts": {
     "start": "node dist/main.js",
     "build": "tsc",
-    "dev": "tsx index.ts",
-    "watch": "tsx watch main.ts",
-    "check": "tsc --noEmit"
+    "dev": "tsx src/main.ts",
+    "watch": "tsx watch src/main.ts",
+    "check": "tsc --noEmit",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
