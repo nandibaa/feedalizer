@@ -1,0 +1,27 @@
+{
+  "name": "feedializer",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node dist/main.js",
+    "build": "tsc",
+    "dev": "tsx src/main.ts",
+    "watch": "tsx watch src/main.ts",
+    "check": "tsc --noEmit",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.24.0",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
+  },
+  "dependencies": {
+    "@ethersphere/bee-js": "^10.1.1",
+    "ethers": "^6.15.0"
+  }
+}
